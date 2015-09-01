@@ -54,7 +54,7 @@ for pm in kml.xpath('//ns:Placemark', **nss):
     if not os.path.exists(fpath):
         r = requests.get(icon)
         with open(fpath, 'w') as f: f.write(r.content)
-    icon = fpath
+    #icon = fpath
 
     wpt = copy.deepcopy(wpt_tmpl)
     wpt.xpath('ns:name', **nssg)[0].text = name
@@ -73,11 +73,12 @@ for pm in kml.xpath('//ns:Placemark', **nss):
         fpath = './attachments/%s.pdf' % norm_name
         if not os.path.exists(fpath):
             subprocess.check_output(['/home/kos/dev/3rdparty/cutycapt-code/CutyCapt/CutyCapt', '--delay=300', '--url=%s' % u, '--out=%s' % fpath], stderr=subprocess.STDOUT)
-        hu = '<a href="%s">%s</a>' % (u, u)
+        hu = '<a href="%s">%s</a>' % (u, u,)
         desc = desc.replace(u, hu)
         link = copy.deepcopy(wpt_link_t)
         link.attrib['href'] = fpath
         link.xpath('ns:text', **nssg)[0].text = u
+        link.remove(link.xpath('ns:text', **nssg)[0])
         wpt.append(link)
         #	<link href="./attach/meteor1.pdf" />
 
