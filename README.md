@@ -11,3 +11,14 @@ qmake
 make
 
 ```
+
+## set env 
+```
+export CUTYCAPT=<path to cuty-capt directory>
+```
+
+## run
+```
+python locus__kml_to_gpx.py -i doc.kml  -o out.gpx
+```
+
