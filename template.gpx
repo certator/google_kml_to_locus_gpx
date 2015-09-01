@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<gpx version="1.1" creator="Locus Android"
+ xmlns="http://www.topografix.com/GPX/1/1"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd"
+ xmlns:gpx_style="http://www.topografix.com/GPX/gpx_style/0/2"
+ xmlns:gpxx="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+ xmlns:gpxtrkx="http://www.garmin.com/xmlschemas/TrackStatsExtension/v1"
+ xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v2"
+ xmlns:locus="http://www.locusmap.eu">
+	<metadata>
+		<desc>File with points/tracks from Locus Free/3.11.3</desc>
+	</metadata>
+
+<wpt lat="40.520423" lon="22.971676">
+	<!-- <ele>0.00</ele> -->
+	<!-- <time>2015-09-01T10:41:40Z</time> -->
+	<name>Аэропорт Салоники</name>
+	<desc><![CDATA[<font color="#ff000000"><table width="100%"><tr><td><table width="100%"><tr><td align="left" valign="center"><small><b>Создано</b></small></td><td align="center" valign="center">1970-01-01 03:00:00</td></tr>
+</table></td></tr></table></font>]]></desc>
+	<!-- <sym>//www.gstatic.com/mapspro/images/stock/1417-trans-airport</sym> -->
+	<link href="./attach/meteor2.pdf" ><text>text here</text></link>
+	<extensions>
+		<locus:icon>http://www.gstatic.com/mapspro/images/stock/1417-trans-airport.png</locus:icon>
+	</extensions>
+</wpt>
+
+</gpx>
