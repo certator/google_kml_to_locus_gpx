@@ -1,8 +1,31 @@
-import re, copy, os, md5
+import re, copy, os, md5, requests
 from lxml import etree
 from bs4 import BeautifulSoup
 from lxml.etree import CDATA
 import subprocess 
+
+import sys
+
+import argparse
+'''
+parser = OptionParser()
+parser.add_option("-o", "--out", dest="gpx",
+                  help="write result to gpx file",)
+parser.add_option("-i", "--in", dest="kml",
+                  help="source kml file",)
+
+(options, args) = parser.parse_args()
+'''
+parser = argparse.ArgumentParser(description="Convert google kml to gpx format with locus extensions")
+parser.add_argument('-i', '--in', dest='kml', help='source kml file')
+parser.add_argument('-o', '--out', dest='gpx', help='write result to gpx file')
+
+args = parser.parse_args()
+
+
+if args.kml is None or args.gpx is None:
+    parser.print_help()
+    sys.exit(1)
 
 #urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', url)
 
@@ -21,7 +44,7 @@ troot = tmpl.getroot()
 wpt_tmpl = tmpl.getroot().findall('{http://www.topografix.com/GPX/1/1}wpt')[0]
 troot.remove(wpt_tmpl)
 
-kml = etree.parse('doc.kml')
+kml = etree.parse(args.kml)
 
 try:
     os.makedirs('attachments')
@@ -72,7 +95,7 @@ for pm in kml.xpath('//ns:Placemark', **nss):
         norm_name = re.sub(r'[^a-zA-Z0-9]', '_', u) + '_' + m.hexdigest()[:4]
         fpath = './attachments/%s.pdf' % norm_name
         if not os.path.exists(fpath):
-            subprocess.check_output(['/home/kos/dev/3rdparty/cutycapt-code/CutyCapt/CutyCapt', '--delay=300', '--url=%s' % u, '--out=%s' % fpath], stderr=subprocess.STDOUT)
+            subprocess.check_output([os.environ['CUTYCAPT'] + '/CutyCapt', '--delay=300', '--url=%s' % u, '--out=%s' % fpath], stderr=subprocess.STDOUT)
         hu = '<a href="%s">%s</a>' % (u, u,)
         desc = desc.replace(u, hu)
         link = copy.deepcopy(wpt_link_t)
@@ -89,6 +112,6 @@ for pm in kml.xpath('//ns:Placemark', **nss):
 
 
 s1 = etree.tostring(tmpl, encoding='utf-8')
-with open('out.gpx', 'w') as f: f.write(s1)
+with open(args.gpx  , 'w') as f: f.write(s1)
 
 
