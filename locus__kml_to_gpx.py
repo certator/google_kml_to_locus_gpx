@@ -2,9 +2,10 @@ import re, copy, os, md5, requests
 from lxml import etree
 from bs4 import BeautifulSoup
 from lxml.etree import CDATA
+from zipfile import ZipFile
 import subprocess 
 
-import sys
+import sys, glob
 
 import argparse
 '''
@@ -19,6 +20,8 @@ parser.add_option("-i", "--in", dest="kml",
 parser = argparse.ArgumentParser(description="Convert google kml to gpx format with locus extensions")
 parser.add_argument('-i', '--in', dest='kml', help='source kml file')
 parser.add_argument('-o', '--out', dest='gpx', help='write result to gpx file')
+parser.add_argument('-d', '--dir', dest='dir', help='attachment directory (local)', default='attachments')
+parser.add_argument('-z', '--zip', dest='zip', help='pack all to zip')
 
 args = parser.parse_args()
 
@@ -47,7 +50,7 @@ troot.remove(wpt_tmpl)
 kml = etree.parse(args.kml)
 
 try:
-    os.makedirs('attachments')
+    os.makedirs(args.dir)
 except:
     pass
 
@@ -73,7 +76,7 @@ for pm in kml.xpath('//ns:Placemark', **nss):
     norm_id = norm.getparent().xpath('ns:styleUrl', **nss)[0].text
     st = kml.xpath("//ns:Style[@id='%s']" % norm_id[1:], **nss)[0]
     icon = st.xpath("ns:IconStyle/ns:Icon/ns:href", **nss)[0].text
-    fpath = 'attachments/%s' % icon.rpartition('/')[-1]
+    fpath = '%s/%s' % (args.dir, icon.rpartition('/')[-1])
     if not os.path.exists(fpath):
         r = requests.get(icon)
         with open(fpath, 'w') as f: f.write(r.content)
@@ -93,7 +96,7 @@ for pm in kml.xpath('//ns:Placemark', **nss):
         m = md5.md5()
         m.update(u)
         norm_name = re.sub(r'[^a-zA-Z0-9]', '_', u) + '_' + m.hexdigest()[:4]
-        fpath = './attachments/%s.pdf' % norm_name
+        fpath = './%s/%s.pdf' % (args.dir, norm_name)
         if not os.path.exists(fpath):
             subprocess.check_output([os.environ['CUTYCAPT'] + '/CutyCapt', '--delay=300', '--url=%s' % u, '--out=%s' % fpath], stderr=subprocess.STDOUT)
         hu = '<a href="%s">%s</a>' % (u, u,)
@@ -113,5 +116,14 @@ for pm in kml.xpath('//ns:Placemark', **nss):
 
 s1 = etree.tostring(tmpl, encoding='utf-8')
 with open(args.gpx  , 'w') as f: f.write(s1)
+
+
+if not args.zip is None:
+    with ZipFile(args.zip, 'w') as zip:
+        zip.write(args.gpx)
+        for fn in glob.glob(args.dir + '/*'):
+            
+            zip.write(fn, fn)
+
 
 
