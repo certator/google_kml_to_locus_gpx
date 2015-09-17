@@ -60,8 +60,17 @@ nssg = {'namespaces':{'ns': 'http://www.topografix.com/GPX/1/1'}}
 
 files = []
 
+names = set()
+
 for pm in kml.xpath('//ns:Placemark', **nss):
     name = pm.xpath('ns:name', **nss)[0].text
+    for i in range(0, 100):
+        nname = (name + ("" if i == 0 else "_" + str(i)))
+        if nname in names: 
+            continue
+        break
+    name = nname
+    names.add(name)
     print name
     lon, lat, nop = pm.xpath('ns:Point/ns:coordinates', **nss)[0].text.split(',')
     
