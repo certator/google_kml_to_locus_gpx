@@ -93,7 +93,7 @@ for pm in kml.xpath('//ns:Placemark', **nss):
     wpt_link_t = wpt.xpath('ns:link', **nssg)[0]
     wpt.remove(wpt_link_t)
 
-    urls = [u[0] for u in re.findall(r'(http[s]?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*))', desc)]
+    urls = [u[0] for u in re.findall(r'(http[s]?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=\(\)]*))', desc)]
     for u in sorted(set(urls), key=lambda f: len(f)):
         print u
         m = md5.md5()
@@ -101,8 +101,10 @@ for pm in kml.xpath('//ns:Placemark', **nss):
         norm_name = re.sub(r'[^a-zA-Z0-9]', '_', u) + '_' + m.hexdigest()[:4]
         fpath = './%s/%s.pdf' % (args.dir, norm_name)
         files += [fpath]
-        if not os.path.exists(fpath):
-            subprocess.check_output([os.environ['CUTYCAPT'] + '/CutyCapt', '--delay=300', '--url=%s' % u, '--out=%s' % fpath], stderr=subprocess.STDOUT)
+        cmd = [os.environ['CUTYCAPT'] + '/CutyCapt', '--delay=3000', '--url=%s' % u, '--out=%s' % fpath, '--print-backgrounds=on', '--user-agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.94 Safari/537.36"']
+        #print ' '.join(cmd)
+        if not os.path.exists(fpath):            
+            subprocess.check_output(cmd, stderr=subprocess.STDOUT)
         hu = '<a href="%s">%s</a>' % (u, u,)
         desc = desc.replace(u, hu)
         link = copy.deepcopy(wpt_link_t)
