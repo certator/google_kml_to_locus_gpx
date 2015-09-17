@@ -58,6 +58,8 @@ except:
 nss = {'namespaces':{'ns': 'http://www.opengis.net/kml/2.2'}}
 nssg = {'namespaces':{'ns': 'http://www.topografix.com/GPX/1/1'}}
 
+files = []
+
 for pm in kml.xpath('//ns:Placemark', **nss):
     name = pm.xpath('ns:name', **nss)[0].text
     print name
@@ -80,6 +82,7 @@ for pm in kml.xpath('//ns:Placemark', **nss):
     if not os.path.exists(fpath):
         r = requests.get(icon)
         with open(fpath, 'w') as f: f.write(r.content)
+    files += [fpath]
     #icon = fpath
 
     wpt = copy.deepcopy(wpt_tmpl)
@@ -97,6 +100,7 @@ for pm in kml.xpath('//ns:Placemark', **nss):
         m.update(u)
         norm_name = re.sub(r'[^a-zA-Z0-9]', '_', u) + '_' + m.hexdigest()[:4]
         fpath = './%s/%s.pdf' % (args.dir, norm_name)
+        files += [fpath]
         if not os.path.exists(fpath):
             subprocess.check_output([os.environ['CUTYCAPT'] + '/CutyCapt', '--delay=300', '--url=%s' % u, '--out=%s' % fpath], stderr=subprocess.STDOUT)
         hu = '<a href="%s">%s</a>' % (u, u,)
@@ -121,8 +125,7 @@ with open(args.gpx  , 'w') as f: f.write(s1)
 if not args.zip is None:
     with ZipFile(args.zip, 'w') as zip:
         zip.write(args.gpx)
-        for fn in glob.glob(args.dir + '/*'):
-            
+        for fn in set(files):            
             zip.write(fn, fn)
 
 
