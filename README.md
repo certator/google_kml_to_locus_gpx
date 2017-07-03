@@ -22,3 +22,8 @@ export CUTYCAPT=<path to cuty-capt directory>
 python locus__kml_to_gpx.py -i doc.kml  -o out.gpx
 ```
 
+# UPD
+
+mapsforge-map-writer-0.6.0.jar
+Osmosis Version 0.44.1
+
