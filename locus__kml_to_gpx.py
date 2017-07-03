@@ -80,8 +80,13 @@ for pm in kml.xpath('//ns:Placemark', **nss):
     icon = st.xpath("ns:IconStyle/ns:Icon/ns:href", **nss)[0].text
     fpath = '%s/%s' % (args.dir, icon.rpartition('/')[-1])
     if not os.path.exists(fpath):
-        r = requests.get(icon)
-        with open(fpath, 'w') as f: f.write(r.content)
+        if 'http' not in icon:    
+            with open(icon) as f:
+                content = f.read()
+        else:   
+            r = requests.get(icon)
+            content = r.content
+        with open(fpath, 'w') as f: f.write(content)
     files += [fpath]    
 
     wpt = copy.deepcopy(wpt_tmpl)
