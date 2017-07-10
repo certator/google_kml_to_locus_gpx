@@ -1,0 +1,17 @@
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+version = '1.0'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+    compile 'org.mapsforge:mapsforge-map-writer:0.8.0'
+}
+
+task copyToLib(type: Copy) {
+    into "$buildDir/output/libs"
+    from configurations.runtime
+}

@@ -1,0 +1,52 @@
+version: "2"
+services:
+  cutycapt_build:
+    hostname: cutycapt_build
+    build:
+      context: .
+      args:
+        PIP_INDEX_URL: ${PIP_INDEX_URL}
+      dockerfile: ./cutycapt_build.Dockerfile
+    volumes:
+    - /build/cutycapt/cutycapt-code/CutyCapt
+  cutycapt:
+    hostname: cutycapt
+    build:
+      context: .
+      args:
+        PIP_INDEX_URL: ${PIP_INDEX_URL}
+      dockerfile: ./cutycapt.Dockerfile
+    volumes:
+    - ".:/app"
+    volumes_from:
+    - cutycapt_build:ro
+  osmosis:
+    hostname: osmosis
+    build:
+      context: .
+      args:
+        OSMOSIS_VERSION: "0.45"
+      dockerfile: ./osmosis.Dockerfile
+    working_dir: /app
+    volumes:
+    - ".:/app"
+  osmosis:
+    hostname: osmosis
+    build:
+      context: .
+      args:
+        OSMOSIS_VERSION: "0.45"
+      dockerfile: ./osmosis.Dockerfile
+    working_dir: /opt/osmosis
+    volumes:
+    - "/Users/kos/Downloads/czech-republic-latest.osm.pbf:/etc/czech-republic-latest.osm.pbf"
+#    - ".:/app"
+  app:
+    hostname: app
+    build:
+      context: .
+      args:
+        PIP_INDEX_URL: ${PIP_INDEX_URL}
+      dockerfile: ./Dockerfile
+
+#compile 'org.mapsforge:mapsforge-map-writer:0.8.0'
